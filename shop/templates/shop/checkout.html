@@ -1,0 +1,330 @@
+{% extends "shop/home.html" %}
+{% load static %}
+
+{% block title %}Захиалга | KEF CLOTHING{% endblock %}
+
+{% block content %}
+<main class="order-page">
+    <div class="container">
+        <div class="order-heading">
+            <h1>Захиалга</h1>
+            <a class="order-cart-link" href="{% url 'cart' %}">Сагс</a>
+        </div>
+
+        <p id="orderEmpty" hidden>
+            Таны сагс хоосон байна.
+            <a href="{% url 'products' %}">Бүтээгдэхүүн үзэх</a>
+        </p>
+
+        <div id="orderLayout" class="order-layout">
+            <!-- ЗҮҮН ТАЛ -->
+            <section class="order-left" aria-label="Захиалгын бараа">
+                <div class="order-box">
+                    <div class="order-selection">
+                        <span>● Бүгдийг сонгох</span>
+                        <span id="orderItemCount"></span>
+                    </div>
+
+                    <div id="orderItems"></div>
+                </div>
+
+                <div class="order-box order-summary">
+                    <div>
+                        <span>Захиалгын үнэ</span>
+                        <span id="orderSubtotal">0₮</span>
+                    </div>
+
+                    <div>
+                        <span>Хүргэлтийн төлбөр</span>
+                        <span id="orderDelivery">6,000₮</span>
+                    </div>
+
+                    <div class="order-grand-total">
+                        <strong>Нийт үнэ</strong>
+                        <strong id="orderTotal">0₮</strong>
+                    </div>
+                </div>
+
+                <div class="order-box">
+                    <label class="order-coupon-label" for="orderCoupon">
+                        Купон код оруулах
+                    </label>
+
+                    <div class="order-coupon-row">
+                        <input id="orderCoupon" placeholder="Купон код">
+                        <button id="orderCouponButton" type="button">
+                            Шалгах
+                        </button>
+                    </div>
+
+                    <p id="orderCouponMessage" class="order-muted" hidden></p>
+                </div>
+
+            </section>
+
+            <!-- БАРУУН ТАЛ -->
+            <section class="order-right" aria-label="Захиалга үргэлжлүүлэх">
+                <div class="order-tabs">
+                    <button
+                        id="orderInfoTab"
+                        class="order-tab active"
+                        type="button"
+                        aria-pressed="true"
+                    >
+                        ⓘ Мэдээлэл
+                    </button>
+
+                    <button
+                        id="orderPaymentTab"
+                        class="order-tab"
+                        type="button"
+                        aria-pressed="false"
+                        disabled
+                    >
+                        ▣ Төлбөр төлөх
+                    </button>
+                </div>
+
+                <!-- МЭДЭЭЛЭЛ -->
+                <form id="orderForm" class="order-form">
+                    <label for="customerName">Нэр *</label>
+                    <input
+                        id="customerName"
+                        name="name"
+                        autocomplete="name"
+                        required
+                    >
+
+                    <label for="customerPhone">Утас *</label>
+                    <input
+                        id="customerPhone"
+                        name="phone"
+                        type="tel"
+                        autocomplete="tel"
+                        placeholder="Утас"
+                        pattern="[0-9]{8}"
+                        title="8 оронтой утасны дугаар оруулна уу."
+                        required
+                    >
+
+                    <label for="deliveryZone">Хүргэлтийн бүс</label>
+                    <select id="deliveryZone" name="zone">
+                        <option value="6000">
+                            Бүс харгалзахгүй — 6,000₮
+                        </option>
+                        <option value="0">
+                            Дэлгүүрээс очиж авах — 0₮
+                        </option>
+                    </select>
+
+                    <p class="order-muted">
+                        Хүргэлтийн төлбөрийг энэ үзүүлэн дээр 6,000₮-өөр тооцов.
+                    </p>
+
+                    <label for="customerCity">Аймаг / Хот *</label>
+                    <select id="customerCity" name="city" required>
+                        <option value="Улаанбаатар">Улаанбаатар</option>
+                        <option value="Дархан-Уул">Дархан-Уул</option>
+                        <option value="Орхон">Орхон</option>
+                        <option value="Бусад">Бусад</option>
+                    </select>
+
+                    <div class="order-form-columns">
+                        <div>
+                            <label for="customerDistrict">Сум / Дүүрэг *</label>
+                            <input
+                                id="customerDistrict"
+                                name="district"
+                                placeholder="Сум / Дүүрэг"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label for="customerKhoroo">Баг / Хороо *</label>
+                            <input
+                                id="customerKhoroo"
+                                name="khoroo"
+                                placeholder="Баг / Хороо"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <label for="customerAddress">Хүргүүлэх хаяг *</label>
+                    <input
+                        id="customerAddress"
+                        name="address"
+                        autocomplete="street-address"
+                        placeholder="Байр, орц, давхар, тоот"
+                        required
+                    >
+
+                    <label for="customerNote">Нэмэлт мэдээлэл</label>
+                    <textarea
+                        id="customerNote"
+                        name="note"
+                        rows="4"
+                        placeholder="Нэмэлт мэдээлэл"
+                    ></textarea>
+
+                    <label for="customerWords">what3words хаяг</label>
+                    <input
+                        id="customerWords"
+                        name="words"
+                        placeholder="///гурван.үгтэй.хаяг"
+                    >
+
+                    <div class="order-policy">
+                        <div class="order-policy-heading">
+                            <img
+                                src="{% static 'shop/images/hurgelt.png' %}"
+                                alt=""
+                            >
+                            <span>Хүргэлтийн нөхцөл</span>
+                        </div>
+                        <p>
+                            Захиалга хийгдсэнээс хойш 24–72 цагийн хооронд
+                            хүргэгдэнэ. Зээлийн апп ашиглан худалдан авалт
+                            хийх бол хүргэлтийн төлбөрийг тусад нь төлнө үү.
+                        </p>
+                    </div>
+
+                    <div class="order-policy">
+                        <div class="order-policy-heading">
+                            <img
+                                src="{% static 'shop/images/tulbur.png' %}"
+                                alt=""
+                            >
+                            <span>Төлбөрийн мэдээлэл</span>
+                        </div>
+                        <p>
+                            Хас банк MN550032005005697992, Т.Онон.
+                            Энэ хуудсан дээрх төлбөрийн үйлдэл нь үзүүлэн болно.
+                        </p>
+                    </div>
+
+                    <button class="order-primary" type="submit">
+                        Үргэлжлүүлэх
+                    </button>
+                </form>
+
+                <!-- ТӨЛБӨР -->
+                <div id="orderPaymentPanel" hidden>
+                    <div class="order-payment-box">
+                        <fieldset class="order-payment-options">
+                            <legend>Төлбөрийн арга сонгох</legend>
+
+                            <label class="order-payment-option">
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="QPay"
+                                >
+                                <span class="order-payment-mark qpay">Q</span>
+                                <span>
+                                    <strong>QPay</strong>
+                                    <small>QPay ашиглан төлөх</small>
+                                </span>
+                            </label>
+
+                            <label class="order-payment-option">
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="HiPay"
+                                >
+                                <span class="order-payment-mark hipay">hi</span>
+                                <span>
+                                    <strong>HiPay</strong>
+                                    <small>HiPay ашиглан төлөх</small>
+                                </span>
+                            </label>
+
+                            <label class="order-payment-option">
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="Дансаар шилжүүлэх"
+                                    checked
+                                >
+                                <span class="order-payment-mark bank">₮</span>
+                                <span>
+                                    <strong>Дансаар шилжүүлэх</strong>
+                                    <small>Банкны дансаар төлөх</small>
+                                </span>
+                            </label>
+                        </fieldset>
+
+                        <p class="order-payment-caption">ЗЭЭЛИЙН ҮЙЛЧИЛГЭЭ</p>
+
+                        <div class="order-credit-options">
+                            <label class="order-payment-option">
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="StorePay"
+                                >
+                                <img
+                                    class="order-payment-logo"
+                                    src="{% static 'shop/images/storepay.jpg' %}"
+                                    alt=""
+                                >
+                                <span>
+                                    <strong>StorePay</strong>
+                                    <small>Хуваан төлөх сонголт</small>
+                                </span>
+                            </label>
+
+                            <label class="order-payment-option">
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="Pocket"
+                                >
+                                <img
+                                    class="order-payment-logo"
+                                    src="{% static 'shop/images/pocket.png' %}"
+                                    alt=""
+                                >
+                                <span>
+                                    <strong>Pocket</strong>
+                                    <small>Хуваан төлөх сонголт</small>
+                                </span>
+                            </label>
+                        </div>
+
+                        <p class="order-payment-notice">
+                            Энэ бол үзүүлэн төлбөрийн хэсэг.
+                            “Төлбөр төлөх” дарахад бодит мөнгөн гүйлгээ
+                            хийгдэхгүй.
+                        </p>
+                    </div>
+
+                    <button
+                        id="orderPayButton"
+                        class="order-primary"
+                        type="button"
+                    >
+                        Төлбөр төлөх
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<dialog id="orderSuccessDialog" class="order-success">
+    <div class="order-success-icon">✓</div>
+    <h2>Захиалга баталгаажлаа!</h2>
+    <p>Таны захиалгын мэдээллийг амжилттай бөглөлөө.</p>
+    <p id="orderSuccessTotal"></p>
+    <p class="order-muted">
+        Үзүүлэн хувилбар: бодит төлбөр хийгдээгүй,
+        захиалга серверт илгээгдээгүй.
+    </p>
+    <a class="order-primary" href="{% url 'home' %}">
+        Нүүр хуудас руу буцах
+    </a>
+</dialog>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'shop/home.html' %}
+
+{% block title %}Миний сагс | KEF CLOTHING{% endblock %}
+
+{% block content %}
+<main class="cart-page">
+    <div class="container">
+
+        <h1>Миний сагс</h1>
+
+        <div class="cart-page-layout">
+
+            <section class="cart-page-items"
+                     id="cartPageItems"
+                     aria-label="Сагсанд байгаа бараанууд">
+            </section>
+
+            <aside class="cart-summary">
+                <h2>Захиалгын дүн</h2>
+
+                <div class="cart-summary-row">
+                    <span>Барааны дүн</span>
+                    <strong id="cartPageTotal">0₮</strong>
+                </div>
+
+                <hr>
+
+                <div class="cart-summary-row">
+                    <span>Хүргэлт</span>
+                    <span>Хаягаас хамаарна</span>
+                </div>
+
+                <p class="cart-delivery-note">
+                    Хүргэлтийн төлбөр хүргэх хаягаас хамаарна.
+                </p>
+
+                <a class="black-button"
+                id="continueCheckout"
+                href="{% url 'checkout' %}">
+                    Захиалга үргэлжлүүлэх
+                </a>
+
+                <a class="cart-continue-shopping"
+                href="{% url 'products' %}">
+                    Үргэлжлүүлэн дэлгүүр хэсэх
+                </a>
+            </aside>
+
+        </div>
+
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,258 @@
+{% extends 'shop/home.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | KEF CLOTHING{% endblock %}
+
+{% block content %}
+<main class="product-detail-page">
+    <div class="container">
+
+        <div class="product-detail-layout">
+
+            <!-- БАРААНЫ ЗУРГУУД -->
+            <div class="detail-gallery">
+
+                <!-- ҮНДСЭН ТОМ ЗУРАГ -->
+                <div class="detail-main-image">
+                    <img id="detailMainImage"
+                         src="{% static product.image %}"
+                         alt="{{ product.name }}">
+                </div>
+
+                <!-- ЖИЖИГ ЗУРГУУД -->
+                <div class="detail-thumbnails"
+                     aria-label="Барааны зургууд">
+
+                    <button class="detail-thumbnail active"
+                            type="button"
+                            data-image="{% static product.image %}"
+                            aria-label="Эхний зураг"
+                            aria-pressed="true">
+                        <img src="{% static product.image %}"
+                             alt="">
+                    </button>
+
+                    <button class="detail-thumbnail"
+                            type="button"
+                            data-image="{% static product.hover_image %}"
+                            aria-label="Хоёр дахь зураг"
+                            aria-pressed="false">
+                        <img src="{% static product.hover_image %}"
+                             alt="">
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- БАРААНЫ МЭДЭЭЛЭЛ -->
+            <section class="detail-info"
+                     aria-labelledby="detailTitle">
+
+                <h1 id="detailTitle">{{ product.name }}</h1>
+
+                <!-- ҮНЭ -->
+                {% if product.old_price %}
+                <p class="detail-price sale-price">
+                    <span>{{ product.price_text }}</span>
+                    <del>{{ product.old_price_text }}</del>
+                </p>
+                {% else %}
+                <p class="detail-price">
+                    {{ product.price_text }}
+                </p>
+                {% endif %}
+
+                <!-- ТАЙЛБАР -->
+                <div class="detail-description">
+                    {% if is_polo %}
+                    <p>Polo shirt - oversized - midi sleeve</p>
+
+                    <p>
+                        85%-ийн цэвэр даавуу, зуны улиралд таарсан
+                        зөөлөн, хөнгөн материалтай.
+                    </p>
+
+                    <p>
+                        Модель 176:52<br>
+                        M size өмссөн
+                    </p>
+                    {% else %}
+                    <p>{{ product.name }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- ХЭМЖЭЭ СОНГОХ -->
+                <fieldset class="detail-size-fieldset">
+                    <legend>Size</legend>
+
+                    <div class="detail-sizes">
+                        {% for size in sizes %}
+                        <label class="detail-size-option">
+                            <input type="radio"
+                                   name="product_size"
+                                   value="{{ size }}"
+                                   {% if forloop.first %}checked{% endif %}>
+
+                            <span>{{ size }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                </fieldset>
+
+                <!-- ТОО ШИРХЭГ, САГСЛАХ, ЗАХИАЛАХ -->
+                <div class="detail-actions">
+
+                    <div class="detail-quantity">
+                        <button id="quantityMinus"
+                                type="button"
+                                aria-label="Тоо ширхэг хасах">
+                            −
+                        </button>
+
+                        <input id="productQuantity"
+                               type="number"
+                               value="1"
+                               min="1"
+                               max="99"
+                               step="1"
+                               aria-label="Тоо ширхэг">
+
+                        <button id="quantityPlus"
+                                type="button"
+                                aria-label="Тоо ширхэг нэмэх">
+                            +
+                        </button>
+                    </div>
+
+                    <button class="detail-cart-button"
+                            id="addToCartButton"
+                            type="button"
+                            data-id="{{ product.id }}"
+                            data-name="{{ product.name }}"
+                            data-price="{{ product.price }}"
+                            data-image="{% static product.image %}"
+                            data-url="{% url 'product_detail' product.id %}"
+                            {% if product.sold_out %}disabled{% endif %}>
+                        САГСЛАХ
+                    </button>
+
+                    <button
+                        id="buyNowButton"
+                        class="detail-order-button"
+                        type="button"
+                        data-checkout-url="{% url 'checkout' %}?buy_now=1"
+                        {% if product.sold_out %}disabled{% endif %}
+                    >
+                        {% if product.sold_out %}ДУУССАН{% else %}ЗАХИАЛАХ{% endif %}
+                    </button>
+
+                </div>
+
+                <!-- ТӨЛБӨРИЙН МЭДЭЭЛЭЛ -->
+                <div class="detail-payments">
+
+                    <!-- POCKET -->
+                    <div class="payment-card">
+                        <img class="payment-logo"
+                             src="{% static 'shop/images/pocket.png' %}"
+                             alt="Pocket">
+
+                        <div class="payment-text">
+                            <h3>Pocket урьдчилгаагүй хувааж төл</h3>
+
+                            <p>
+                                Урьдчилгаагүй, шимтгэлгүй
+                                30–90 хоногт 2–6 хувааж төл.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- STOREPAY -->
+                    <div class="payment-card">
+                        <img class="payment-logo"
+                             src="{% static 'shop/images/storepay.jpg' %}"
+                             alt="StorePay">
+
+                        <div class="payment-text">
+                            <h3>StorePay</h3>
+                            <p>Ашиглан 4 хуваан төлөх боломжтой</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- ТӨСТЭЙ БҮТЭЭГДЭХҮҮН: ENDLESS SLIDER -->
+        <section class="featured-section related-section"
+                 aria-labelledby="relatedTitle">
+
+            <h2 id="relatedTitle">Төстэй бүтээгдэхүүн</h2>
+
+            <div class="featured-slider"
+                 tabindex="0"
+                 aria-label="Төстэй бүтээгдэхүүнүүд">
+
+                {% for item in related_products %}
+                <a class="product-card{% if item.sold_out %} sold-out{% endif %}"
+                   href="{% url 'product_detail' item.id %}">
+
+                    <div class="product-image">
+
+                        <img class="image-main"
+                             src="{% static item.image %}"
+                             alt="{{ item.name }}"
+                             loading="lazy">
+
+                        <img class="image-hover"
+                             src="{% static item.hover_image %}"
+                             alt=""
+                             aria-hidden="true"
+                             loading="lazy">
+
+                        {% if item.discount %}
+                        <span class="discount-badge">
+                            -{{ item.discount }}%
+                        </span>
+                        {% endif %}
+
+                        {% if item.sold_out %}
+                        <span class="sold-badge">Дууссан</span>
+
+                        {% elif item.bestseller %}
+                        <span class="popular-badge">♨ Эрэлттэй</span>
+                        {% endif %}
+
+                    </div>
+
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.old_price %}
+                    <p class="product-price sale-price">
+                        <span>{{ item.price_text }}</span>
+                        <del>{{ item.old_price_text }}</del>
+                    </p>
+                    {% else %}
+                    <p class="product-price">
+                        {{ item.price_text }}
+                    </p>
+                    {% endif %}
+
+                </a>
+                {% endfor %}
+
+            </div>
+
+            <div class="slider-dots"
+                 aria-label="Төстэй бүтээгдэхүүний байрлал">
+            </div>
+
+        </section>
+
+    </div>
+</main>
+{% endblock %}

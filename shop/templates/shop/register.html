@@ -1,0 +1,41 @@
+{% extends 'shop/home.html' %}
+
+{% block title %}Бүртгүүлэх | KEF CLOTHING{% endblock %}
+
+{% block content %}
+<main class="auth-page">
+    <section class="auth-card">
+        <h1>Бүртгүүлэх</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                <div class="auth-help">
+                    {{ field.help_text|safe }}
+                </div>
+                {% endif %}
+
+                {{ field.errors }}
+            {% endfor %}
+
+            <button class="black-button" type="submit">
+                БҮРТГҮҮЛЭХ
+            </button>
+        </form>
+
+        <a class="auth-secondary" href="{% url 'login' %}">
+            Бүртгэлтэй бол нэвтрэх
+        </a>
+    </section>
+</main>
+{% endblock %}

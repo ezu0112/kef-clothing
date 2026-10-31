@@ -1,0 +1,216 @@
+{% extends 'shop/home.html' %}
+{% load static %}
+
+{% block content %}
+<main class="products-page">
+    <div class="container products-layout">
+
+        <!-- АНГИЛАЛ, ШҮҮЛТҮҮР -->
+        <aside class="products-sidebar" aria-label="Барааны ангилал">
+
+            <div class="sidebar-categories">
+                <h2>АНГИЛЛУУД</h2>
+
+                <div class="category-options">
+                    {% for link in category_links %}
+                    <a href="{{ link.url }}"
+                       class="category-option{% if link.active %} active{% endif %}"
+                       {% if link.active %}aria-current="true"{% endif %}>
+                        {{ link.label }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <form class="sidebar-other"
+                  id="productFilterForm"
+                  method="get"
+                  action="{% url 'products' %}">
+
+                <h2>БУСАД</h2>
+
+                <input type="hidden"
+                       name="category"
+                       value="{{ category }}">
+
+                <input type="hidden"
+                       name="q"
+                       value="{{ query }}">
+
+                <input type="hidden"
+                       name="sort"
+                       value="{{ sort }}">
+
+                <label>
+                    <input type="checkbox"
+                           name="sale"
+                           value="1"
+                           {% if sale_only %}checked{% endif %}>
+                    <span>Хямдралтай</span>
+                </label>
+
+                <label>
+                    <input type="checkbox"
+                           name="featured"
+                           value="1"
+                           {% if featured_only %}checked{% endif %}>
+                    <span>Онцлох</span>
+                </label>
+
+                <label>
+                    <input type="checkbox"
+                           name="bestseller"
+                           value="1"
+                           {% if bestseller_only %}checked{% endif %}>
+                    <span>Бестселлер</span>
+                </label>
+
+                <button class="filter-apply-button" type="submit">
+                    Шүүх
+                </button>
+
+                <a class="filter-reset" href="{% url 'products' %}">
+                    Шүүлтүүр арилгах
+                </a>
+            </form>
+
+        </aside>
+
+        <!-- БАРААНУУД -->
+        <section class="products-content"
+                 aria-labelledby="productsTitle">
+
+            <div class="products-toolbar">
+                <h1 id="productsTitle">{{ page_heading }}</h1>
+
+                <form class="products-controls"
+                      id="productSearchForm"
+                      method="get"
+                      action="{% url 'products' %}">
+
+                    <input type="hidden"
+                           name="category"
+                           value="{{ category }}">
+
+                    {% if sale_only %}
+                    <input type="hidden" name="sale" value="1">
+                    {% endif %}
+
+                    {% if featured_only %}
+                    <input type="hidden" name="featured" value="1">
+                    {% endif %}
+
+                    {% if bestseller_only %}
+                    <input type="hidden" name="bestseller" value="1">
+                    {% endif %}
+
+                    <div class="products-search">
+                        <span aria-hidden="true">⌕</span>
+
+                        <input type="search"
+                               name="q"
+                               value="{{ query }}"
+                               placeholder="Хайх"
+                               aria-label="Бараа хайх">
+                    </div>
+
+                    <select name="sort" aria-label="Барааны эрэмбэ">
+                        <option value="newest"
+                                {% if sort == 'newest' %}selected{% endif %}>
+                            Шинэ нь эхэндээ
+                        </option>
+
+                        <option value="oldest"
+                                {% if sort == 'oldest' %}selected{% endif %}>
+                            Хуучин нь эхэндээ
+                        </option>
+
+                        <option value="az"
+                                {% if sort == 'az' %}selected{% endif %}>
+                            A–Z
+                        </option>
+
+                        <option value="za"
+                                {% if sort == 'za' %}selected{% endif %}>
+                            Z–A
+                        </option>
+
+                        <option value="price_asc"
+                                {% if sort == 'price_asc' %}selected{% endif %}>
+                            Үнэ өсөхөөр
+                        </option>
+
+                        <option value="price_desc"
+                                {% if sort == 'price_desc' %}selected{% endif %}>
+                            Үнэ буурахаар
+                        </option>
+                    </select>
+
+                    <button class="products-search-button" type="submit">
+                        Хайх
+                    </button>
+                </form>
+            </div>
+
+            <div class="products-grid">
+
+                {% for product in products %}
+                <a class="product-card{% if product.sold_out %} sold-out{% endif %}"
+                   href="/products/{{ product.id }}/">
+
+                    <div class="product-image">
+                        <img class="image-main"
+                             src="{% static product.image %}"
+                             alt="{{ product.name }}"
+                             loading="lazy">
+
+                        <img class="image-hover"
+                             src="{% static product.hover_image %}"
+                             alt=""
+                             aria-hidden="true"
+                             loading="lazy">
+
+                        {% if product.discount %}
+                        <span class="discount-badge">
+                            -{{ product.discount }}%
+                        </span>
+                        {% endif %}
+
+                        {% if product.sold_out %}
+                        <span class="sold-badge">Дууссан</span>
+                        {% elif product.bestseller %}
+                        <span class="popular-badge">♨ Эрэлттэй</span>
+                        {% endif %}
+                    </div>
+
+                    <h3>{{ product.name }}</h3>
+
+                    {% if product.old_price %}
+                    <p class="product-price sale-price">
+                        <span>{{ product.price_text }}</span>
+                        <del>{{ product.old_price_text }}</del>
+                    </p>
+                    {% else %}
+                    <p class="product-price">
+                        {{ product.price_text }}
+                    </p>
+                    {% endif %}
+
+                </a>
+
+                {% empty %}
+                <div class="products-empty">
+                    <p>Тохирох бараа олдсонгүй.</p>
+                    <a href="{% url 'products' %}">
+                        Бүх бүтээгдэхүүн харах
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+{% endblock %}

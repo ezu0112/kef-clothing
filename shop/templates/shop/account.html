@@ -1,0 +1,27 @@
+{% extends 'shop/home.html' %}
+
+{% block title %}Миний бүртгэл | KEF CLOTHING{% endblock %}
+
+{% block content %}
+<main class="auth-page">
+    <section class="auth-card">
+        <h1>Миний бүртгэл</h1>
+
+        <p class="account-greeting">
+            Сайн байна уу, <strong>{{ user.username }}</strong>!
+        </p>
+
+        <a class="auth-secondary" href="{% url 'cart' %}">
+            Миний сагс
+        </a>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+
+            <button class="black-button" type="submit">
+                ГАРАХ
+            </button>
+        </form>
+    </section>
+</main>
+{% endblock %}
